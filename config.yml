@@ -1,0 +1,26 @@
+proxies:
+  - socks5://proxyes_usXvAt:XFWwtc1y@216.238.99.163:11190
+
+accounts:
+  - login:password:token
+
+
+sorting:
+  sort_column: 'price'
+  sort_dir: 'asc'
+
+games:
+  whitelist:
+    - 322330:
+
+  blacklist:
+    - 753
+
+
+pagination:
+  quantity:
+    min: 0
+    max: 100
+
+  price:
+    min: 10
