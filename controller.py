@@ -9,7 +9,7 @@ class Controller:
 class Filter:
     def __init__(self, filter_config_file_path: str):
         self.filter_config_file_path: str = filter_config_file_path
-        # self.config = self.reinit_config()
+        self.config = self.reinit_config()
         #
         # self.games: dict[str, list[int]]
         #
@@ -72,3 +72,25 @@ class Filter:
             if first_product[search_key] < search_value and last_product[search_key] >= search_value:
                 return True
             return False
+
+    def is_pagination_good(self, pagination: dict) -> bool | None:
+        key = self.config.get('sorting', {}).get('sort_column', 'price')
+        direction = self.config.get('sorting', {}).get('sort_dir', 'asc')
+        values = self.config.get('pagination', {}).get(key, {})
+
+        search_key = 'sell_price' if key == 'price' else 'sell_listings'
+        search_value = values.get('min', 0) if direction == 'asc' else values.get('max', INFINITE) 
+        if key == 'price':
+            search_value *= 100
+
+        first_product = pagination['results'][0]
+        last_product = pagination['results'][-1]
+
+        if direction == 'asc':
+            if values.get('min', 0) <= first_product[search_key] <= values.get('max', INFINITE) or \
+                    values.get('min', 0) <= last_product[search_key] <= values.get('max', INFINITE):
+                return True
+        elif direction == 'desc':
+            if values.get('min', 0) >= first_product[search_key] >= values.get('max', INFINITE) or \
+                    values.get('min', 0) >= last_product[search_key] >= values.get('max', INFINITE):
+                return True
