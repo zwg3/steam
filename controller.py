@@ -73,24 +73,16 @@ class Filter:
                 return True
             return False
 
-    def is_pagination_good(self, pagination: dict) -> bool | None:
-        key = self.config.get('sorting', {}).get('sort_column', 'price')
-        direction = self.config.get('sorting', {}).get('sort_dir', 'asc')
-        values = self.config.get('pagination', {}).get(key, {})
+    def is_pagination_product_good(self, pagination_product: dict) -> bool | None:
+        values = self.config.get('pagination', {})
+        quantity = values.get('quantity', {})
+        min_quantity = quantity.get('min', 0)
+        max_quantity = quantity.get('max', INFINITE)
 
-        search_key = 'sell_price' if key == 'price' else 'sell_listings'
-        search_value = values.get('min', 0) if direction == 'asc' else values.get('max', INFINITE) 
-        if key == 'price':
-            search_value *= 100
+        price = values.get('price', {})
+        min_price = price.get('min', 0) * 100
+        max_price = price.get('max', INFINITE) * 100
 
-        first_product = pagination['results'][0]
-        last_product = pagination['results'][-1]
-
-        if direction == 'asc':
-            if values.get('min', 0) <= first_product[search_key] <= values.get('max', INFINITE) or \
-                    values.get('min', 0) <= last_product[search_key] <= values.get('max', INFINITE):
-                return True
-        elif direction == 'desc':
-            if values.get('min', 0) >= first_product[search_key] >= values.get('max', INFINITE) or \
-                    values.get('min', 0) >= last_product[search_key] >= values.get('max', INFINITE):
-                return True
+        if min_price <= pagination_product['price'] <= max_price or \
+                min_quantity <= pagination_product['quantity'] <= max_quantity:
+            return True

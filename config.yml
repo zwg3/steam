@@ -4,11 +4,6 @@ proxies:
 accounts:
   - login:password:token
 
-
-sorting:
-  sort_column: 'price'
-  sort_dir: 'asc'
-
 games:
   whitelist:
     - 322330:
@@ -21,6 +16,10 @@ pagination:
   quantity:
     min: 0
     max: 100
+
+sorting:
+  sort_column: 'price'
+  sort_dir: 'asc'
 
   price:
     min: 10
