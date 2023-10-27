@@ -62,6 +62,6 @@ class Filter:
         min_price = price.get('min', 0) * 100
         max_price = price.get('max', INFINITE) * 100
 
-        if min_price <= pagination_product['price'] <= max_price or \
+        if min_price <= pagination_product['price'] <= max_price and \
                 min_quantity <= pagination_product['quantity'] <= max_quantity:
             return True
