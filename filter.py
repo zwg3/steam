@@ -5,15 +5,23 @@ INFINITE = float('inf')
 
 
 class Filter:
-    def __init__(self, filter_config_file_path: str):
+    def __init__(self, filter_config_file_path: str):        
         self.filter_config_file_path: str = filter_config_file_path
-        self.config = self.reinit_config()
+        self.init_config()
 
-    def reinit_config(self) -> dict:
+    def init_config(self):
         with open(self.filter_config_file_path, 'r') as f:
-            return yaml.load(f, Loader=yaml.CLoader)
+            self.config =  yaml.load(f, Loader=yaml.CLoader)
+    
+    def _reinit_config(func):
+        def inner(*args, **kwargs):
+            self = args[0]
+            self.init_config()
+            func(*args, **kwargs)
+        return inner
 
-    def is_game_blacklisted(self, app_id: int) -> bool | None:
+    @_reinit_config    
+    def is_game_blacklisted(self, app_id: int) -> bool | None:      
         app_id = int(app_id)
         if app_id in self.config.get('games', {}).get('blacklist', []):
             return True
